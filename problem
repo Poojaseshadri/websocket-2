@@ -1,0 +1,14 @@
+Part B:
+HTML page:
+- Accepts a file as input
+    - file type: wav
+    - individual file size : Not more than 1MB
+- The API implementation should accept the data as base64 encoded format
+- Send the file through a websocket
+Backend:
+- Form a file out of it 
+- Upload to a S3 bucket
+
+AOP:
+- Use loggers 
+- Use Config file
