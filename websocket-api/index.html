@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAV File Upload</title>
+</head>
+<body>
+    <h2>Upload a WAV File</h2>
+    <input type="file" id="fileInput" accept=".wav">
+    <button onclick="uploadFile()">Upload</button>
+    <p id="status"></p>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8000/ws");
+
+        socket.onopen = function() {
+            console.log("WebSocket connection established.");
+        };
+
+        socket.onerror = function(error) {
+            console.error("WebSocket Error:", error);
+        };
+
+        function uploadFile() {
+            const fileInput = document.getElementById("fileInput");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a WAV file.");
+                return;
+            }
+
+            if (file.size > 1024 * 1024) {
+                alert("File size should not exceed 1MB.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function() {
+                const base64Data = reader.result.split(',')[1];
+                socket.send(JSON.stringify({ filename: file.name, data: base64Data }));
+                document.getElementById("status").innerText = "File uploaded successfully!";
+            };
+        }
+    </script>
+</body>
+</html>
